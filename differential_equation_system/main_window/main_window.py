@@ -117,6 +117,16 @@ class Ui_MainWindow(object):
         self.gridLayout_15.addWidget(self.main_table, 0, 0, 1, 1)
         self.main_task.addTab(self.main_table_tab, "")
         self.gridLayout_17.addWidget(self.main_task, 0, 0, 1, 1)
+
+        self.info_tab = QtWidgets.QWidget()
+        self.info_tab.setObjectName("info_tab")
+        self.gridLayout_8 = QtWidgets.QGridLayout(self.info_tab)
+        self.gridLayout_8.setObjectName("gridLayout_8")
+        self.info = QtWidgets.QTextEdit(self.info_tab)
+        self.info.setReadOnly(True)
+        self.info.setObjectName("info")
+        self.gridLayout_8.addWidget(self.info, 0, 0, 1, 1)
+        self.main_task.addTab(self.info_tab, "")
         self.task_swith.addTab(self.main_tab, "")
         self.gridLayout.addWidget(self.task_swith, 0, 0, 1, 1)
         MainWindow.setCentralWidget(self.centralwidget)
@@ -144,9 +154,9 @@ p, li { white-space: pre-wrap; }
         self.main_x0_label.setText(_translate("MainWindow", "<html><head/><body><p>x<span style=\" vertical-align:sub;\">0</span></p></body></html>"))
         self.main_x0_input.setText(_translate("MainWindow", "0"))
         self.main_u10_label.setText(_translate("MainWindow", "<html><head/><body><p>u<span style=\" vertical-align:sub;\">0</span></p></body></html>"))
-        self.main_u10_input.setText(_translate("MainWindow", "0"))
+        self.main_u10_input.setText(_translate("MainWindow", "1"))
         self.main_u20_label.setText(_translate("MainWindow", "<html><head/><body><p>u'<span style=\" vertical-align:sub;\">0</span></p></body></html>"))
-        self.main_u20_input.setText(_translate("MainWindow", "0"))
+        self.main_u20_input.setText(_translate("MainWindow", "1"))
         self.main_start.setText(_translate("MainWindow", "Численно вычислить"))
         self.main_alghoritm_params.setTitle(_translate("MainWindow", "Параметры алгоритма"))
         self.main_niter_label.setText(_translate("MainWindow", "Количество итераций"))
@@ -158,12 +168,46 @@ p, li { white-space: pre-wrap; }
         self.main_h0_input.setText(_translate("MainWindow", "0.001"))
         self.main_epsilon_input.setText(_translate("MainWindow", "0"))
         self.main_a_label.setText(_translate("MainWindow", "Параметр"))
-        self.main_a_input.setText(_translate("MainWindow", "0"))
+        self.main_a_input.setText(_translate("MainWindow", "1"))
         self.main_graphics_box.setTitle(_translate("MainWindow", "График"))
         self.main_task.setTabText(self.main_task.indexOf(self.main_task_tab), _translate("MainWindow", "Задача"))
         self.main_task.setTabText(self.main_task.indexOf(self.main_table_tab), _translate("MainWindow", "Таблица"))
+        self.main_task.setTabText(self.main_task.indexOf(self.info_tab), _translate("MainWindow", "Справка"))
         self.task_swith.setTabText(self.task_swith.indexOf(self.main_tab), _translate("MainWindow", "Основная задача"))
-    
+
+    def get_stats(self, x_list : list, s_list : list, h_list : list, c1_list : list, c2_list : list):
+        number_iter = len(s_list)
+        max_x = 0
+        max_s = s_list[0]
+        max_h = h_list[0]
+        min_h = h_list[0]
+        c1_count = 0
+        c2_count = 0
+        for i in range(number_iter):
+            if (max_s < s_list[i]):
+                max_x = x_list[i]
+                max_s = s_list[i]
+            max_h = max(max_h, h_list[i])
+            min_h = min(min_h, h_list[i])
+            c1_count += c1_list[i]
+            c2_count += c2_list[i]
+        return max_s, max_x, max_h, min_h, c1_count, c2_count, number_iter
+
+    def update_info(self, x_last, v1_last, v2_last, max_s : float, max_x : float, max_h : float, min_h : float, c1 : int, c2 : int, iter_count : int):
+        self.info.setHtml("""<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
+<html><head><meta name="qrichtext" content="1" /><style type="text/css">
+p, li { white-space: pre-wrap; }
+</style></head><body style=" font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;">
+<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:14pt;">Полученное время (с): </span><span style=" font-size:14pt; font-weight:600;">""" + str(x_last) + """</span></p>
+<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:14pt;">Полученное положение (м): </span><span style=" font-size:14pt; font-weight:600;">""" + str(v2_last) + """</span></p>
+<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:14pt;">Полученное ускорение (м/с^2): </span><span style=" font-size:14pt; font-weight:600;">""" + str(v1_last) + """</span></p>
+<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:14pt;">Максимальная норма оценки локальной погрешности </span><span style=" font-size:14pt; font-weight:600;">""" + str(max_s) +"""</span><span style=" font-size:14pt;"> достигнута при времени </span><span style=" font-size:14pt; font-weight:600;">""" + str(max_x) +"""</span></p>
+<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:14pt;">Максимальный шаг: </span><span style=" font-size:14pt; font-weight:600;">""" + str(max_h) + """</span></p>
+<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:14pt;">Минимальный шаг: </span><span style=" font-size:14pt; font-weight:600;">""" + str(min_h) + """</span></p>
+<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:14pt;">Количество раз, когда шаг увеличивался: </span><span style=" font-size:14pt; font-weight:600;">""" + str(c2) + """</span></p>
+<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:14pt;">Количество раз, когда шаг уменьшался: </span><span style=" font-size:14pt; font-weight:600;">""" + str(c1) + """</span></p>
+<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:14pt;">Количество итераций: </span><span style=" font-size:14pt; font-weight:600;">""" + str(iter_count - 1) + """</span></p></body></html>""")
+
     def plot(self, x_list : list, v1_list : list, v2_list : list):
         self.main_figure.clear()
         v1_v2 = self.main_figure.add_subplot(211)
@@ -266,7 +310,7 @@ p, li { white-space: pre-wrap; }
                 v22_list.append(v2205)
                 dv1_list.append(v1_curr - v1205)
                 dv2_list.append(v2_curr - v2205)
-                s_list.append(abs(max(v1_curr, v2_curr) - max(v1205, v2205)) / 15)
+                s_list.append(max(abs(v1_next - v1205), abs(v2_next - v2205)) / 15)
                 h_list.append(h0)
                 c1_list.append(0)
                 c2_list.append(0)
@@ -304,7 +348,7 @@ p, li { white-space: pre-wrap; }
                     x05, v105, v205 = self.calculate_iter_rk4(x_curr, v1_curr, v2_curr, h_curr / 2, a, f1, f2)
                     _, v1205, v2205 = self.calculate_iter_rk4(x05, v105, v205, h_curr / 2, a, f1, f2)
 
-                    s_curr = abs(max(v1_curr, v2_curr) - max(v1205, v2205)) / 15
+                    s_curr = (max(abs(v1_next - v1205), abs(v2_next - v2205))) / 15
                     if epsilon < s_curr:
                         c1_curr += 1
                         h_curr /= 2
@@ -313,8 +357,8 @@ p, li { white-space: pre-wrap; }
                         h_next = h_curr
                         break
                     if s_curr < epsilon / 15:
-                        h_next = h_curr * 2
                         c2_curr += 1
+                        h_next = h_curr * 2
                         break
                 
                 x_curr = x_next
@@ -331,8 +375,8 @@ p, li { white-space: pre-wrap; }
                 dv1_list.append(v1_curr - v1205)
                 dv2_list.append(v2_curr - v2205)
                 s_list.append(s_curr)
-                c1_list.append(0)
-                c2_list.append(0)
+                c1_list.append(c1_curr)
+                c2_list.append(c2_curr)
             except Exception:
                 break
         return x_list, v1_list, v2_list, v12_list, v22_list, dv1_list, dv2_list, s_list, h_list, c1_list, c2_list
@@ -342,8 +386,10 @@ p, li { white-space: pre-wrap; }
         if 0 == epsilon:
             x_list, v1_list, v2_list, v12_list, v22_list, dv1_list, dv2_list, s_list, h_list, c1_list, c2_list = self.calculate_rk4_h_const(x0, u20, -1 * a * sin(u10), h0, niter, right_break, a, self.f1_main, self.f2_main)
             self.main_table.print_table(x_list, v1_list, v2_list, v12_list, v22_list, dv1_list, dv2_list, s_list, h_list, c1_list, c2_list)
+            self.update_info(x_list[-1], v1_list[-1], v2_list[-1], *self.get_stats(x_list, s_list, h_list, c1_list, c2_list))
             self.plot(x_list, v1_list, v2_list)
         else:
             x_list, v1_list, v2_list, v12_list, v22_list, dv1_list, dv2_list, s_list, h_list, c1_list, c2_list = self.calculate_rk4(x0, u20, -1 * a * sin(u10), h0, epsilon, niter, right_break, a, self.f1_main, self.f2_main)
             self.main_table.print_table(x_list, v1_list, v2_list, v12_list, v22_list, dv1_list, dv2_list, s_list, h_list, c1_list, c2_list)
+            self.update_info(x_list[-1], v1_list[-1], v2_list[-1], *self.get_stats(x_list, s_list, h_list, c1_list, c2_list),)
             self.plot(x_list, v1_list, v2_list)
