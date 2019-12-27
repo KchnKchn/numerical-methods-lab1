@@ -347,7 +347,7 @@ class Ui_MainWindow(object):
         k1 = self.k1(x_curr, v_curr, h_curr, f)
         k2 = self.k2(x_curr, v_curr, h_curr, k1, f)
         k3 = self.k3(x_curr, v_curr, h_curr, k2, f)
-        k4 = self.k3(x_curr, v_curr, h_curr, k3, f)
+        k4 = self.k4(x_curr, v_curr, h_curr, k3, f)
 
         x_next = x_curr + h_curr
         v_next = v_curr + (k1 + k2 * 2 + k3 * 2 + k4) * h_curr / 6
@@ -381,7 +381,7 @@ class Ui_MainWindow(object):
                 v_list.append(v_curr)
                 v2_list.append(v2_next)
                 dv_list.append(v_curr - v2_next)
-                s_list.append((v_curr - v2_next) / 15)
+                s_list.append(abs((v_curr - v2_next) / 15))
                 h_list.append(h0)
                 c1_list.append(0)
                 c2_list.append(0)
@@ -436,7 +436,7 @@ class Ui_MainWindow(object):
                 v_list.append(v_curr)
                 v2_list.append(v2_next)
                 dv_list.append(v_curr - v2_next)
-                s_list.append((v_curr - v2_next) / 15)
+                s_list.append(abs((v_curr - v2_next) / 15))
                 c1_list.append(c1_curr)
                 c2_list.append(c2_curr)
             except Exception:
