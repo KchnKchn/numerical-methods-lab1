@@ -69,7 +69,7 @@ class Ui_MainWindow(object):
         self.gridLayout_15.addWidget(self.main_table, 0, 0, 1, 1)
         self.main_task.addTab(self.main_table_tab, "")
         self.gridLayout_17.addWidget(self.main_task, 0, 0, 1, 1)
-        self.task_swith.addTab(self.main_tab, "")
+        # self.task_swith.addTab(self.main_tab, "")
         self.test_tab = QtWidgets.QWidget()
         self.test_tab.setObjectName("test_tab")
         self.test_gridLayout_17 = QtWidgets.QGridLayout(self.test_tab)
@@ -138,7 +138,7 @@ class Ui_MainWindow(object):
         self.test_info.setObjectName("test_info")
         self.test_gridLayout_5.addWidget(self.test_info, 0, 0, 1, 1)
         self.test_task.addTab(self.test_info_tab, "")
-
+        self.task_swith.addTab(self.main_tab, "")
         self.gridLayout.addWidget(self.task_swith, 0, 0, 1, 1)
         MainWindow.setCentralWidget(self.centralwidget)
 
@@ -179,8 +179,8 @@ p, li { white-space: pre-wrap; }
 <p align="center" style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:14pt; font-weight:600;">(x + 1) * u'(x) = x * u'(x), x = ksi</span></p>
 <p align="center" style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:14pt; font-weight:600;">ksi = 0.4</span></p>
 <p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:12pt;">Аналитическое решение:</span></p>
-<p align="center" style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:14pt; font-weight:600;">u(x) = 0.06055722 * e</span><span style=" font-size:14pt; font-weight:600; vertical-align:super;">sqrt(2/7)</span><span style=" font-size:14pt; font-weight:600;"> * x - 4.33108482 * e</span><span style=" font-size:14pt; font-weight:600; vertical-align:super;">-sqrt(2/7) * x</span><span style=" font-size:14pt; font-weight:600;"> + 1, x &lt;=ksi</span></p>
-<p align="center" style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:14pt; font-weight:600;">u(x) = -0.47202455 * e</span><span style=" font-size:14pt; font-weight:600; vertical-align:super;">sqrt(0.4)</span><span style=" font-size:14pt; font-weight:600;"> * x - 4.33108482 * e</span><span style=" font-size:14pt; font-weight:600; vertical-align:super;">-sqrt(0.4)</span><span style=" font-size:14pt; font-weight:600;"> * x + e</span><span style=" font-size:14pt; font-weight:600; vertical-align:super;">-0.4</span><span style=" font-size:14pt; font-weight:600;"> / 0.16, ksi &lt; x</span></p></body></html>"""))
+<p align="center" style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:14pt; font-weight:600;">u(x) = 0.06055722 * e</span><span style=" font-size:14pt; font-weight:600; vertical-align:super;">sqrt(2/7) * x</span><span style=" font-size:14pt; font-weight:600;"> - 1.06055722 * e</span><span style=" font-size:14pt; font-weight:600; vertical-align:super;">-sqrt(2/7) * x</span><span style=" font-size:14pt; font-weight:600;"> + 1, x &lt;=ksi</span></p>
+<p align="center" style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:14pt; font-weight:600;">u(x) = -0.47202455 * e</span><span style=" font-size:14pt; font-weight:600; vertical-align:super;">sqrt(0.4) * x</span><span style=" font-size:14pt; font-weight:600;"> - 4.33108482 * e</span><span style=" font-size:14pt; font-weight:600; vertical-align:super;">-sqrt(0.4) * x</span><span style=" font-size:14pt; font-weight:600;"> + e</span><span style=" font-size:14pt; font-weight:600; vertical-align:super;">-0.4</span><span style=" font-size:14pt; font-weight:600;"> / 0.16, ksi &lt; x</span></p></body></html>"""))
         
         self.main_start.setText(_translate("MainWindow", "Численно вычислить"))
         self.main_n_label.setText(_translate("MainWindow", "Размер сетки"))
@@ -206,7 +206,7 @@ p, li { white-space: pre-wrap; }
                 max_x = i / n
         return n, max_s, max_x
 
-    def update_main_info(self, n: int, max_s, max_x):
+    def update_main_info(self, n: int, max_s: float, max_x: float):
         self.main_info.setHtml("""<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
 <html><head><meta name="qrichtext" content="1" /><style type="text/css">
 p, li { white-space: pre-wrap; }
@@ -214,7 +214,7 @@ p, li { white-space: pre-wrap; }
 <p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:14pt;">Число разбиений: </span><span style=" font-size:14pt; font-weight:600;">""" + str(n) + """</span></p>
 <p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:14pt;">Максимальная разность численных решений равна </span><span style=" font-size:14pt; font-weight:600;">""" + str(max_s) +"""</span><span style=" font-size:14pt;"> наблюдается в точке </span><span style=" font-size:14pt; font-weight:600;">""" + str(max_x) +"""</span></p>""")
 
-    def update_test_info(self, n: int, max_s, max_x):
+    def update_test_info(self, n: int, max_s: float, max_x: float):
         self.test_info.setHtml("""<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
 <html><head><meta name="qrichtext" content="1" /><style type="text/css">
 p, li { white-space: pre-wrap; }
@@ -256,16 +256,14 @@ p, li { white-space: pre-wrap; }
 
     def main_calculate(self):
         n = self.parse_main_n()
-        v, v2 = solution.main_task(n)
-        x = np.array([i * 1 / n for i in range(n)])
+        x, v, v2 = solution.main_task(n)
         self.update_main_info(*self.get_stats(n, x, v, v2))
         self.main_table.print_table(x, v, v2, v - v2)
         self.main_plot(x, v, v2)
     
     def test_calculate(self):
         n = self.parse_test_n()
-        v, u = solution.test_task(n)
-        x = np.array([i * 1 / n for i in range(n)])
+        x, v, u = solution.test_task(n)
         self.update_test_info(*self.get_stats(n, x, u, v))
         self.test_table.print_table(x, u, v, u - v)
         self.test_plot(x, v, u)
