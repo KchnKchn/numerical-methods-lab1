@@ -200,6 +200,27 @@ class Ui_MainWindow(object):
         self.gridLayout_15.addWidget(self.main_table, 0, 0, 1, 1)
         self.main_task.addTab(self.main_table_tab, "")
         self.gridLayout_17.addWidget(self.main_task, 0, 0, 1, 1)
+
+
+        self.main_info_tab = QtWidgets.QWidget()
+        self.main_info_tab.setObjectName("main_info_tab")
+        self.gridLayout_5 = QtWidgets.QGridLayout(self.main_info_tab)
+        self.gridLayout_5.setObjectName("gridLayout_5")
+        self.main_info = QtWidgets.QTextEdit(self.main_info_tab)
+        self.main_info.setReadOnly(True)
+        self.main_info.setObjectName("main_info")
+        self.gridLayout_5.addWidget(self.main_info, 0, 0, 1, 1)
+        self.main_task.addTab(self.main_info_tab, "")
+        self.test_info_tab = QtWidgets.QWidget()
+        self.test_info_tab.setObjectName("test_info_tab")
+        self.test_gridLayout_5 = QtWidgets.QGridLayout(self.test_info_tab)
+        self.test_gridLayout_5.setObjectName("test_gridLayout_5")
+        self.test_info = QtWidgets.QTextEdit(self.test_info_tab)
+        self.test_info.setReadOnly(True)
+        self.test_info.setObjectName("test_info")
+        self.test_gridLayout_5.addWidget(self.test_info, 0, 0, 1, 1)
+        self.test_task.addTab(self.test_info_tab, "")
+
         self.task_swith.addTab(self.main_tab, "")
         self.gridLayout.addWidget(self.task_swith, 0, 0, 1, 1)
         MainWindow.setCentralWidget(self.centralwidget)
@@ -273,7 +294,52 @@ class Ui_MainWindow(object):
         self.main_task.setTabText(self.main_task.indexOf(self.main_task_tab), _translate("MainWindow", "Задача"))
         self.main_task.setTabText(self.main_task.indexOf(self.main_table_tab), _translate("MainWindow", "Таблица"))
         self.task_swith.setTabText(self.task_swith.indexOf(self.main_tab), _translate("MainWindow", "Основная задача"))
-    
+        self.main_task.setTabText(self.main_task.indexOf(self.main_info_tab), _translate("MainWindow", "Справка"))
+        self.test_task.setTabText(self.test_task.indexOf(self.test_info_tab), _translate("MainWindow", "Справка"))
+
+    def get_stats(self, x_list : list, s_list : list, h_list : list, c1_list : list, c2_list : list):
+        number_iter = len(s_list)
+        max_x = 0
+        max_s = s_list[0]
+        max_h = h_list[0]
+        min_h = h_list[0]
+        c1_count = 0
+        c2_count = 0
+        for i in range(number_iter):
+            if (max_s < s_list[i]):
+                max_x = x_list[i]
+                max_s = s_list[i]
+            max_h = max(max_h, h_list[i])
+            min_h = min(min_h, h_list[i])
+            c1_count += c1_list[i]
+            c2_count += c2_list[i]
+        return max_s, max_x, max_h, min_h, c1_count, c2_count, number_iter
+
+    def update_main_info(self, max_s : float, max_x : float, max_h : float, min_h : float, c1 : int, c2 : int, iter_count : int):
+        self.main_info.setHtml("""<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
+<html><head><meta name="qrichtext" content="1" /><style type="text/css">
+p, li { white-space: pre-wrap; }
+</style></head><body style=" font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;">
+<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:14pt;">Максимальная норма оценки локальной погрешности </span><span style=" font-size:14pt; font-weight:600;">""" + str(max_s) +"""</span><span style=" font-size:14pt;"> достигнута в точке </span><span style=" font-size:14pt; font-weight:600;">""" + str(max_x) +"""</span></p>
+<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:14pt;">Максимальный шаг: </span><span style=" font-size:14pt; font-weight:600;">""" + str(max_h) + """</span></p>
+<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:14pt;">Минимальный шаг: </span><span style=" font-size:14pt; font-weight:600;">""" + str(min_h) + """</span></p>
+<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:14pt;">Количество раз, когда шаг увеличивался: </span><span style=" font-size:14pt; font-weight:600;">""" + str(c2) + """</span></p>
+<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:14pt;">Количество раз, когда шаг уменьшался: </span><span style=" font-size:14pt; font-weight:600;">""" + str(c1) + """</span></p>
+<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:14pt;">Количество итераций: </span><span style=" font-size:14pt; font-weight:600;">""" + str(iter_count - 1) + """</span></p></body></html>""")
+
+    def update_test_info(self, max_s : float, max_x : float, max_h : float, min_h : float, c1 : int, c2 : int, iter_count : int):
+        self.test_info.setHtml("""<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
+<html><head><meta name="qrichtext" content="1" /><style type="text/css">
+p, li { white-space: pre-wrap; }
+</style></head><body style=" font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;">
+<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:14pt;">Максимальная глобальная погрешности </span><span style=" font-size:14pt; font-weight:600;">""" + str(max_s) +"""</span><span style=" font-size:14pt;"> достигнута в точке </span><span style=" font-size:14pt; font-weight:600;">""" + str(max_x) +"""</span></p>
+<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:14pt;">Максимальный шаг: </span><span style=" font-size:14pt; font-weight:600;">""" + str(max_h) + """</span></p>
+<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:14pt;">Минимальный шаг: </span><span style=" font-size:14pt; font-weight:600;">""" + str(min_h) + """</span></p>
+<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:14pt;">Количество раз, когда шаг увеличивался: </span><span style=" font-size:14pt; font-weight:600;">""" + str(c2) + """</span></p>
+<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:14pt;">Количество раз, когда шаг уменьшался: </span><span style=" font-size:14pt; font-weight:600;">""" + str(c1) + """</span></p>
+<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:14pt;">Количество итераций: </span><span style=" font-size:14pt; font-weight:600;">""" + str(iter_count - 1) + """</span></p></body></html>""")
+
+
     def plot(self, graphic, ax, x_list : list, v_list : list, u_list : list):
         ax.clear()
         ax.set_xlabel("x")
@@ -451,12 +517,14 @@ class Ui_MainWindow(object):
             u_list = self.calculate_u_test(x_list, const)
             epsilon_list = self.calculate_sub_u_v(u_list, v_list)
             self.test_table.print_table(x_list, v_list, v2_list, dv_list, s_list, h_list, c1_list, c2_list, u_list, epsilon_list)
+            self.update_test_info(*self.get_stats(x_list, epsilon_list, h_list, c1_list, c2_list))
             self.plot(self.test_graphic, self.test_ax, x_list, v_list, u_list)
         else:
             x_list, v_list, v2_list, dv_list, s_list, h_list, c1_list, c2_list = self.calculate_rk4(x0, u0, h0, epsilon, niter, right_break, self.f_test)
             u_list = self.calculate_u_test(x_list, const)
             epsilon_list = self.calculate_sub_u_v(u_list, v_list)
             self.test_table.print_table(x_list, v_list, v2_list, dv_list, s_list, h_list, c1_list, c2_list, u_list, epsilon_list)
+            self.update_test_info(*self.get_stats(x_list, epsilon_list, h_list, c1_list, c2_list))
             self.plot(self.test_graphic, self.test_ax, x_list, v_list, u_list)
     
     def main_calculate(self):
@@ -464,8 +532,10 @@ class Ui_MainWindow(object):
         if 0 == epsilon:
             x_list, v_list, v2_list, dv_list, s_list, h_list, c1_list, c2_list = self.calculate_rk4_h_const(x0, u0, h0, niter, right_break, self.f_main)
             self.main_table.print_table(x_list, v_list, v2_list, dv_list, s_list, h_list, c1_list, c2_list)
+            self.update_main_info(*self.get_stats(x_list, s_list, h_list, c1_list, c2_list))
             self.plot(self.main_graphic, self.main_ax, x_list, v_list, None)
         else:
             x_list, v_list, v2_list, dv_list, s_list, h_list, c1_list, c2_list = self.calculate_rk4(x0, u0, h0, epsilon, niter, right_break, self.f_main)
             self.main_table.print_table(x_list, v_list, v2_list, dv_list, s_list, h_list, c1_list, c2_list)
+            self.update_main_info(*self.get_stats(x_list, s_list, h_list, c1_list, c2_list))
             self.plot(self.main_graphic, self.main_ax, x_list, v_list, None)
