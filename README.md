@@ -53,4 +53,3 @@
         cd ./differential_equation_system
         python3 differential_equation_system.py
         ```
-    ```    
